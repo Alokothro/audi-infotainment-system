@@ -1,0 +1,24 @@
+{
+  "name": "audi-infotainment",
+  "version": "1.0.0",
+  "description": "A modern, interactive infotainment system interface inspired by Audi's design language.",
+  "main": "main.js",
+  "scripts": {
+    "start": "npx electron .",
+    "server": "node server.js",
+    "dev": "concurrently \"npm run server\" \"npm start\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
