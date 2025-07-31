@@ -2,10 +2,10 @@
   "name": "audi-infotainment",
   "version": "1.0.0",
   "description": "A modern, interactive infotainment system interface inspired by Audi's design language.",
-  "main": "main.js",
+  "main": "js/core/electron.js",
   "scripts": {
     "start": "npx electron .",
-    "server": "node server.js",
+    "server": "node backend/server.js",
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

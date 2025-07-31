@@ -19,7 +19,7 @@ function createWindow () {
   })
 
   // Load the startup animation first
-  mainWindow.loadFile('startup.html')
+  mainWindow.loadFile('views/startup.html')
 
   // Show window when ready
   mainWindow.once('ready-to-show', () => {

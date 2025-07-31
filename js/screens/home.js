@@ -117,7 +117,7 @@ class Car3DViewer {
         const loader = new THREE.GLTFLoader();
         
         loader.load(
-            '2020_audi_s5.glb',
+            '../assets/models/2020_audi_s5.glb',
             (gltf) => {
                 this.car = gltf.scene;
                 
