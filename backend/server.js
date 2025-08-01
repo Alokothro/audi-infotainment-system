@@ -103,6 +103,11 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', ai: 'Claude' });
 });
 
+// Google Maps API key endpoint
+app.get('/api/maps-key', (req, res) => {
+    res.json({ apiKey: process.env.GOOGLE_MAPS_API_KEY });
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Audi AI backend running on port ${PORT}`);

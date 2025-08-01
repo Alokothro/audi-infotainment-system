@@ -537,6 +537,19 @@
     <script src="../js/systems/audio.js"></script>
     <script src="../js/systems/aria.js"></script>
     <script src="../js/systems/bluetooth-server.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdZFsfuPkRJsoF5SehNFzGKphxOm9irwY&callback=initMap&libraries=places"></script>
+    <!-- Google Maps API - Configure API key in .env file -->
+    <script async defer id="google-maps-script"></script>
+    <script>
+        // Load Google Maps with API key from server
+        fetch('http://localhost:3001/api/maps-key')
+            .then(res => res.json())
+            .then(data => {
+                const script = document.getElementById('google-maps-script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&callback=initMap&libraries=places`;
+            })
+            .catch(err => {
+                console.error('Failed to load Maps API key');
+            });
+    </script>
 </body>
 </html>
