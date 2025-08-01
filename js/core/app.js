@@ -174,10 +174,6 @@ sourceBtns.forEach(btn => {
                 trackInfo.textContent = 'Waiting for device...';
                 trackArtist.textContent = 'Connect your phone';
                 break;
-            case 'USB':
-                trackInfo.textContent = 'No USB connected';
-                trackArtist.textContent = 'Insert USB device';
-                break;
             case 'Spotify':
                 trackInfo.textContent = 'Spotify Premium';
                 trackArtist.textContent = 'Sign in to continue';
