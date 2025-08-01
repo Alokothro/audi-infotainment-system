@@ -538,18 +538,46 @@
     <script src="../js/systems/aria.js"></script>
     <script src="../js/systems/bluetooth-server.js"></script>
     <!-- Google Maps API - Configure API key in .env file -->
-    <script async defer id="google-maps-script"></script>
     <script>
+        // Global flag to check if maps loaded
+        window.mapsLoaded = false;
+        
         // Load Google Maps with API key from server
         fetch('http://localhost:3001/api/maps-key')
             .then(res => res.json())
             .then(data => {
-                const script = document.getElementById('google-maps-script');
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&callback=initMap&libraries=places`;
+                if (data.apiKey) {
+                    const script = document.createElement('script');
+                    script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&callback=initMap&libraries=places`;
+                    script.async = true;
+                    script.defer = true;
+                    document.body.appendChild(script);
+                    window.mapsLoaded = true;
+                } else {
+                    console.error('No API key received from server');
+                    showMapError();
+                }
             })
             .catch(err => {
-                console.error('Failed to load Maps API key');
+                console.error('Failed to load Maps API key:', err);
+                // Fallback: Show error message
+                showMapError();
             });
+            
+        function showMapError() {
+            const mapEl = document.getElementById('map');
+            if (mapEl) {
+                mapEl.innerHTML = `
+                    <div class="map-placeholder">
+                        <i class="fas fa-exclamation-triangle fa-3x"></i>
+                        <p>Unable to load map</p>
+                        <small>Make sure the backend server is running</small>
+                        <br>
+                        <small>Run: npm run server</small>
+                    </div>
+                `;
+            }
+        }
     </script>
 </body>
 </html>
