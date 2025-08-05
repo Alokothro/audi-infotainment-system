@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm start)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }

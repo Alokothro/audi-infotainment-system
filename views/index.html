@@ -294,14 +294,14 @@
                                 <div class="setting-item">
                                     <span>Touch Sounds</span>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" id="touch-sounds" checked>
+                                        <input type="checkbox" id="touch-sounds">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
                                 <div class="setting-item">
                                     <span>Navigation Voice</span>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" id="nav-voice">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
@@ -311,16 +311,16 @@
                                 <h3>Units</h3>
                                 <div class="setting-item">
                                     <span>Temperature</span>
-                                    <select class="setting-select">
-                                        <option>Fahrenheit</option>
-                                        <option>Celsius</option>
+                                    <select class="setting-select" id="temp-unit-select">
+                                        <option value="Fahrenheit">Fahrenheit</option>
+                                        <option value="Celsius">Celsius</option>
                                     </select>
                                 </div>
                                 <div class="setting-item">
                                     <span>Distance</span>
-                                    <select class="setting-select">
-                                        <option>Miles</option>
-                                        <option>Kilometers</option>
+                                    <select class="setting-select" id="distance-unit-select">
+                                        <option value="Miles">Miles</option>
+                                        <option value="Kilometers">Kilometers</option>
                                     </select>
                                 </div>
                             </div>
@@ -544,10 +544,13 @@
     <script src="../js/screens/media.js"></script>
     <script src="../js/screens/radio.js"></script>
     <script src="../js/screens/phone.js"></script>
+    <script src="../js/screens/climate.js"></script>
+    <script src="../js/screens/settings.js"></script>
+    <script src="../js/systems/driver-profiles.js"></script>
+    <script src="../js/systems/audio-manager.js"></script>
     <script src="../js/systems/audio.js"></script>
     <script src="../js/systems/aria.js"></script>
     <script src="../js/systems/bluetooth-server.js"></script>
-    <script src="../js/systems/driver-profiles.js"></script>
     <!-- Google Maps API - Configure API key in .env file -->
     <script>
         // Global flag to check if maps loaded
@@ -605,7 +608,27 @@
                 setTimeout(() => {
                     window.driverProfileManager.setCurrentDriver(currentDriver);
                     updateDriverDisplay();
-                }, 500); // Small delay to ensure all elements are loaded
+                    
+                    // Ensure climate manager gets the loaded state
+                    if (window.climateManager && window.climateState) {
+                        window.climateManager.loadState(window.climateState);
+                    }
+                    
+                    // Reload settings to ensure they're properly applied
+                    if (window.settingsManager) {
+                        window.settingsManager.loadSavedSettings();
+                        window.settingsManager.updateAllUI();
+                    }
+                    
+                    // Ensure audio manager gets the correct state
+                    if (window.audioManager && window.driverProfileManager) {
+                        const profile = window.driverProfileManager.profiles[currentDriver];
+                        if (profile) {
+                            window.audioManager.touchSoundsEnabled = profile.preferences.system.keyClickSound;
+                            console.log(`Applied touch sounds for ${currentDriver}:`, profile.preferences.system.keyClickSound);
+                        }
+                    }
+                }, 1000); // Increased delay to ensure all scripts are loaded
             }
         });
         

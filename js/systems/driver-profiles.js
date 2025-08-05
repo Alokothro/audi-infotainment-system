@@ -32,7 +32,7 @@ class DriverProfileManager {
                     volume: 50,
                     lastRadioStation: 0, // Station index
                     favoriteStations: [],
-                    touchSounds: true
+                    touchSounds: true  // This is in media preferences but should be removed
                 },
                 
                 // Display settings
@@ -52,14 +52,19 @@ class DriverProfileManager {
                 // Vehicle
                 vehicle: {
                     preferredUnits: 'imperial', // or 'metric'
-                    driveMode: 'comfort' // sport, eco, comfort
+                    driveMode: 'comfort', // sport, eco, comfort
+                    temperatureUnit: 'Fahrenheit',
+                    distanceUnit: 'Miles',
+                    bestLapTime: null // Store best lap time for this driver
                 },
                 
                 // System
                 system: {
                     language: 'en',
-                    keyClickSound: true,
-                    startupSound: true
+                    keyClickSound: false,
+                    startupSound: true,
+                    navigationVoice: true,
+                    systemVolume: 75
                 }
             },
             
@@ -109,31 +114,19 @@ class DriverProfileManager {
         // Apply other preferences
         this.applySystemSettings(profile.preferences.system);
         
+        // Apply vehicle settings including best lap time
+        this.applyVehicleSettings(profile.preferences.vehicle);
+        
         console.log(`Profile loaded for ${profile.name}`);
     }
     
     applyClimateSettings(climate) {
-        // Update climate UI
-        const updateTempDisplay = (selector, value) => {
-            const elem = document.querySelector(selector);
-            if (elem) elem.textContent = `${value}°F`;
-        };
-        
-        updateTempDisplay('.climate-zone:first-child .temp-value', climate.driverTemp);
-        updateTempDisplay('.climate-zone:last-child .temp-value', climate.passengerTemp);
-        
-        // Update fan speed
-        const fanSlider = document.querySelector('.fan-slider');
-        if (fanSlider) fanSlider.value = climate.fanSpeed;
-        
-        // Update climate buttons
-        this.updateButton('#auto-btn', climate.auto);
-        this.updateButton('#ac-btn', climate.ac);
-        this.updateButton('#dual-btn', climate.dualZone);
-        
-        // Store in app state
-        if (window.climateState) {
-            Object.assign(window.climateState, climate);
+        // Use the climate manager to load state
+        if (window.climateManager) {
+            window.climateManager.loadState(climate);
+        } else {
+            // Fallback if climate manager not loaded yet
+            window.climateState = climate;
         }
     }
     
@@ -152,37 +145,90 @@ class DriverProfileManager {
             window.radioPlayer.currentStation = media.lastRadioStation;
         }
         
-        // Apply touch sounds
-        if (window.audioManager) {
-            window.audioManager.touchSoundsEnabled = media.touchSounds;
-        }
+        // Touch sounds are now in system preferences, not media
     }
     
     applyDisplaySettings(display) {
-        // Set brightness
-        const brightnessSlider = document.getElementById('brightness-slider');
-        if (brightnessSlider) {
-            brightnessSlider.value = display.brightness;
-            document.body.style.filter = `brightness(${display.brightness}%)`;
+        // Apply theme immediately
+        document.body.setAttribute('data-theme', display.theme);
+        if (display.theme === 'light') {
+            document.body.classList.add('light-theme');
+            document.body.classList.remove('dark-theme');
+        } else {
+            document.body.classList.add('dark-theme');
+            document.body.classList.remove('light-theme');
         }
         
-        // Set theme
+        // Apply brightness
+        document.body.style.filter = `brightness(${display.brightness}%)`;
+        
+        // Apply night mode
         document.body.classList.toggle('night-mode', display.nightMode);
         
-        // Update settings UI
-        const nightModeToggle = document.getElementById('night-mode');
-        if (nightModeToggle) nightModeToggle.checked = display.nightMode;
+        // Use the settings manager to load all settings
+        if (window.settingsManager) {
+            const settingsData = {
+                brightness: display.brightness,
+                nightMode: display.nightMode,
+                theme: display.theme,
+                touchSounds: this.profiles[this.currentDriver].preferences.system.keyClickSound,
+                navigationVoice: this.profiles[this.currentDriver].preferences.system.navigationVoice,
+                systemVolume: this.profiles[this.currentDriver].preferences.system.systemVolume,
+                temperatureUnit: this.profiles[this.currentDriver].preferences.vehicle.temperatureUnit,
+                distanceUnit: this.profiles[this.currentDriver].preferences.vehicle.distanceUnit
+            };
+            window.settingsManager.loadState(settingsData);
+        }
     }
     
     applySystemSettings(system) {
+        console.log('Applying system settings, keyClickSound:', system.keyClickSound);
+        
         // Apply key click sounds
         const touchSoundsToggle = document.getElementById('touch-sounds');
-        if (touchSoundsToggle) touchSoundsToggle.checked = system.keyClickSound;
+        if (touchSoundsToggle) {
+            touchSoundsToggle.checked = system.keyClickSound;
+            console.log('Set touch sounds toggle to:', system.keyClickSound);
+        }
         
-        // Store in audio manager
+        // Apply to audio manager (this is what actually controls the sounds)
         if (window.audioManager) {
             window.audioManager.touchSoundsEnabled = system.keyClickSound;
+            console.log('Set audioManager.touchSoundsEnabled to:', system.keyClickSound);
+        } else {
+            console.warn('AudioManager not available when applying system settings');
         }
+        
+        // Apply navigation voice
+        const navVoiceToggle = document.getElementById('nav-voice');
+        if (navVoiceToggle) {
+            navVoiceToggle.checked = system.navigationVoice;
+        }
+        
+        // Apply system volume
+        const volumeElements = document.querySelectorAll('.setting-slider');
+        if (volumeElements.length > 1) {
+            const systemVolumeSlider = volumeElements[1];
+            systemVolumeSlider.value = system.systemVolume;
+        }
+    }
+    
+    applyVehicleSettings(vehicle) {
+        // Apply best lap time
+        if (vehicle.bestLapTime !== undefined) {
+            // Set the global bestLapTime variable
+            window.bestLapTime = vehicle.bestLapTime;
+            
+            // Update the display
+            const bestTimeDisplay = document.getElementById('best-time');
+            if (bestTimeDisplay) {
+                bestTimeDisplay.textContent = vehicle.bestLapTime || '--:--:--';
+            }
+            
+            console.log(`Applied best lap time for driver: ${vehicle.bestLapTime || 'none'}`);
+        }
+        
+        // Temperature and distance units are already handled by settings manager
     }
     
     updateButton(selector, active) {
@@ -217,9 +263,46 @@ class DriverProfileManager {
         }
         profile.preferences.display.nightMode = document.body.classList.contains('night-mode');
         
+        // Save theme from settings manager or body attribute
+        if (window.settingsManager) {
+            profile.preferences.display.theme = window.settingsManager.state.theme;
+        } else {
+            // Fallback to body attribute
+            const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+            profile.preferences.display.theme = currentTheme;
+        }
+        
         // Save system settings
         profile.preferences.system.keyClickSound = 
-            document.getElementById('touch-sounds')?.checked || true;
+            document.getElementById('touch-sounds')?.checked ?? false;
+        
+        // Save navigation voice
+        const navVoiceToggle = document.getElementById('nav-voice');
+        if (navVoiceToggle) {
+            profile.preferences.system.navigationVoice = navVoiceToggle.checked;
+        }
+        
+        // Save system volume - in Sound section (3rd section)
+        const systemVolumeSlider = document.querySelector('.settings-section:nth-child(3) .setting-slider');
+        if (systemVolumeSlider) {
+            profile.preferences.system.systemVolume = parseInt(systemVolumeSlider.value);
+        }
+        
+        // Save units
+        const tempUnitSelect = document.getElementById('temp-unit-select');
+        if (tempUnitSelect) {
+            profile.preferences.vehicle.temperatureUnit = tempUnitSelect.value;
+        }
+        
+        const distanceUnitSelect = document.getElementById('distance-unit-select');
+        if (distanceUnitSelect) {
+            profile.preferences.vehicle.distanceUnit = distanceUnitSelect.value;
+        }
+        
+        // Save best lap time from global variable
+        if (window.bestLapTime !== undefined) {
+            profile.preferences.vehicle.bestLapTime = window.bestLapTime;
+        }
         
         // Update last state
         profile.lastState = {
