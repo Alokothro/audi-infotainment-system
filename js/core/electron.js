@@ -2,9 +2,12 @@ const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const BluetoothManager = require('../systems/bluetooth-main')
 
+let mainWindow = null
+let bluetoothManager = null
+
 function createWindow () {
   // Create the browser window
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
     webPreferences: {
@@ -30,8 +33,10 @@ function createWindow () {
   // Start maximized (but not fullscreen)
   mainWindow.maximize()
   
-  // Initialize Bluetooth Manager
-  const bluetoothManager = new BluetoothManager(mainWindow)
+  // Initialize Bluetooth Manager only once
+  if (!bluetoothManager) {
+    bluetoothManager = new BluetoothManager(mainWindow)
+  }
   
 }
 

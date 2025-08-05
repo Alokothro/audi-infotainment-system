@@ -4,6 +4,7 @@
 const { ipcMain } = require('electron');
 
 class BluetoothManager {
+    static handlersRegistered = false;
     constructor(mainWindow) {
         this.mainWindow = mainWindow;
         this.setupIPCHandlers();
@@ -11,22 +12,27 @@ class BluetoothManager {
     }
     
     setupIPCHandlers() {
-        // Handle request to start Bluetooth server
-        ipcMain.on('start-bluetooth-server', (event, config) => {
-            console.log('Starting Bluetooth server with config:', config);
-            this.startBluetoothServer(config);
-        });
-        
-        // Handle request to make discoverable
-        ipcMain.on('make-discoverable', (event, options) => {
-            console.log('Making system discoverable...');
-            this.makeDiscoverable(options);
-        });
-        
-        // Handle Bluetooth device selection
-        ipcMain.handle('select-bluetooth-device', async (event) => {
-            return await this.selectBluetoothDevice();
-        });
+        // Only register handlers if they haven't been registered yet
+        if (!BluetoothManager.handlersRegistered) {
+            // Handle request to start Bluetooth server
+            ipcMain.on('start-bluetooth-server', (event, config) => {
+                console.log('Starting Bluetooth server with config:', config);
+                this.startBluetoothServer(config);
+            });
+            
+            // Handle request to make discoverable
+            ipcMain.on('make-discoverable', (event, options) => {
+                console.log('Making system discoverable...');
+                this.makeDiscoverable(options);
+            });
+            
+            // Handle Bluetooth device selection
+            ipcMain.handle('select-bluetooth-device', async (event) => {
+                return await this.selectBluetoothDevice();
+            });
+            
+            BluetoothManager.handlersRegistered = true;
+        }
     }
     
     setupBluetoothPermissions() {
