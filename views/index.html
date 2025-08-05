@@ -253,6 +253,16 @@
                         <h2>Settings</h2>
                         <div class="settings-sections">
                             <div class="settings-section">
+                                <h3>Driver Profile</h3>
+                                <div class="setting-item">
+                                    <span>Current Driver</span>
+                                    <span class="setting-value" id="current-driver-display">Driver 1</span>
+                                </div>
+                                <button class="setting-btn" onclick="switchDriver()">Switch Driver</button>
+                                <button class="setting-btn" onclick="saveProfileNow()">Save Current Settings</button>
+                            </div>
+                            
+                            <div class="settings-section">
                                 <h3>Display</h3>
                                 <div class="setting-item">
                                     <span>Brightness <span id="brightness-value">80%</span></span>
@@ -537,6 +547,7 @@
     <script src="../js/systems/audio.js"></script>
     <script src="../js/systems/aria.js"></script>
     <script src="../js/systems/bluetooth-server.js"></script>
+    <script src="../js/systems/driver-profiles.js"></script>
     <!-- Google Maps API - Configure API key in .env file -->
     <script>
         // Global flag to check if maps loaded
@@ -576,6 +587,57 @@
                         <small>Run: npm run server</small>
                     </div>
                 `;
+            }
+        }
+        
+        // Initialize driver profile on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if a driver was selected
+            const currentDriver = localStorage.getItem('audi_current_driver');
+            if (!currentDriver || currentDriver === 'guest') {
+                // If no driver selected or guest, redirect to driver selection
+                if (currentDriver !== 'guest') {
+                    window.location.href = 'driver-select.html';
+                    return;
+                }
+            } else {
+                // Load the driver's profile
+                setTimeout(() => {
+                    window.driverProfileManager.setCurrentDriver(currentDriver);
+                    updateDriverDisplay();
+                }, 500); // Small delay to ensure all elements are loaded
+            }
+        });
+        
+        // Driver profile functions
+        function updateDriverDisplay() {
+            const currentDriver = localStorage.getItem('audi_current_driver');
+            const displayElement = document.getElementById('current-driver-display');
+            if (displayElement) {
+                if (currentDriver === 'driver1') {
+                    displayElement.textContent = 'Driver 1';
+                } else if (currentDriver === 'driver2') {
+                    displayElement.textContent = 'Driver 2';
+                } else if (currentDriver === 'guest') {
+                    displayElement.textContent = 'Guest';
+                }
+            }
+        }
+        
+        function switchDriver() {
+            // Save current profile before switching
+            if (window.driverProfileManager) {
+                window.driverProfileManager.saveCurrentState();
+            }
+            // Redirect to driver selection
+            window.location.href = 'driver-select.html';
+        }
+        
+        function saveProfileNow() {
+            if (window.driverProfileManager) {
+                window.driverProfileManager.saveCurrentState();
+                // Show confirmation
+                alert('Profile settings saved successfully!');
             }
         }
     </script>
