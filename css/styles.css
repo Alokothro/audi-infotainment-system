@@ -239,10 +239,35 @@ body[data-theme="light"] .car-outline {
     opacity: 0.8;
 }
 
+/* Weather Info Styling */
+.weather-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.weather-icon {
+    font-size: 14px;
+    color: #ffa726;
+    transition: color 0.3s ease;
+}
+
+.weather-icon.fas.fa-sun { color: #ffa726; }
+.weather-icon.fas.fa-moon { color: #90a4ae; }
+.weather-icon.fas.fa-cloud { color: #90a4ae; }
+.weather-icon.fas.fa-cloud-sun { color: #ffb74d; }
+.weather-icon.fas.fa-cloud-rain { color: #42a5f5; }
+.weather-icon.fas.fa-bolt { color: #ff7043; }
+.weather-icon.fas.fa-snowflake { color: #81c784; }
+
 .temp {
     font-size: 16px;
     font-weight: 500;
 }
+
+/* Light theme weather adjustments */
+body[data-theme="light"] .weather-icon.fas.fa-moon { color: #37474f; }
+body[data-theme="light"] .weather-icon.fas.fa-cloud { color: #546e7a; }
 
 .main-content {
     flex: 1;

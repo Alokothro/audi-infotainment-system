@@ -108,8 +108,15 @@ app.get('/api/maps-key', (req, res) => {
     res.json({ apiKey: process.env.GOOGLE_MAPS_API_KEY });
 });
 
+// Weather API key endpoint
+app.get('/api/weather-key', (req, res) => {
+    res.json({ apiKey: process.env.OPENWEATHER_API_KEY });
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Audi AI backend running on port ${PORT}`);
     console.log('Claude API key loaded:', process.env.CLAUDE_API_KEY ? 'Yes' : 'No');
+    console.log('Google Maps API key loaded:', process.env.GOOGLE_MAPS_API_KEY ? 'Yes' : 'No');
+    console.log('OpenWeather API key loaded:', process.env.OPENWEATHER_API_KEY ? 'Yes' : 'No');
 });
