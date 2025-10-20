@@ -89,8 +89,10 @@ class InternetRadio {
                 genre: 'News/Talk'
             }
         ];
-        
+
         this.setupAudioEventListeners();
+        // Load the first station on initialization
+        this.loadStation(0);
     }
     
     setupAudioEventListeners() {
