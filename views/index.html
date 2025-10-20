@@ -556,43 +556,51 @@
     <script>
         // Global flag to check if maps loaded
         window.mapsLoaded = false;
-        
-        // Load Google Maps with API key from server
-        fetch('http://localhost:3001/api/maps-key')
-            .then(res => res.json())
-            .then(data => {
-                if (data.apiKey) {
-                    const script = document.createElement('script');
-                    script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&callback=initMap&libraries=places`;
-                    script.async = true;
-                    script.defer = true;
-                    document.body.appendChild(script);
-                    window.mapsLoaded = true;
-                } else {
-                    console.error('No API key received from server');
-                    showMapError();
-                }
-            })
-            .catch(err => {
-                console.error('Failed to load Maps API key:', err);
-                // Fallback: Show error message
-                showMapError();
-            });
-            
-        function showMapError() {
+
+        // Try to load Google Maps with API key from server, with fallback
+        async function loadGoogleMaps() {
+            let apiKey = null;
+
+            // Try to get API key from backend server (for local development)
+            try {
+                const response = await fetch('http://localhost:3001/api/maps-key');
+                const data = await response.json();
+                apiKey = data.apiKey;
+            } catch (err) {
+                console.log('Backend server not available, using environment variable');
+                // Fallback: Use hardcoded key for AWS Amplify deployment
+                // IMPORTANT: In production, set this as an environment variable in Amplify
+                apiKey = 'AIzaSyBdZFsfuPkRJsoF5SehNFzGKphxOm9irwY';
+            }
+
+            if (apiKey) {
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places`;
+                script.async = true;
+                script.defer = true;
+                script.onerror = () => showMapError('Failed to load Google Maps API');
+                document.body.appendChild(script);
+                window.mapsLoaded = true;
+            } else {
+                showMapError('No API key available');
+            }
+        }
+
+        function showMapError(message = 'Unable to load map') {
             const mapEl = document.getElementById('map');
             if (mapEl) {
                 mapEl.innerHTML = `
                     <div class="map-placeholder">
                         <i class="fas fa-exclamation-triangle fa-3x"></i>
-                        <p>Unable to load map</p>
-                        <small>Make sure the backend server is running</small>
-                        <br>
-                        <small>Run: npm run server</small>
+                        <p>${message}</p>
+                        <small>Check console for details</small>
                     </div>
                 `;
             }
         }
+
+        // Load maps on page load
+        loadGoogleMaps();
         
         // Initialize driver profile on load
         document.addEventListener('DOMContentLoaded', () => {
