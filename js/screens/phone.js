@@ -50,25 +50,16 @@ class SimplePhoneManager {
                 <div class="pairing-code-display">
                     <h3>Enter this code on your phone:</h3>
                     <div class="code-digits">
-                        ${this.pairingCode.split('').map(digit => 
+                        ${this.pairingCode.split('').map(digit =>
                             `<span class="code-digit">${digit}</span>`
                         ).join('')}
                     </div>
                 </div>
-                
-                <div class="pairing-instructions">
-                    <p>On your phone:</p>
-                    <ol>
-                        <li>Open browser and go to:</li>
-                        <li class="url">http://${this.getLocalIP()}:${this.serverPort}</li>
-                        <li>Enter the code above</li>
-                    </ol>
-                </div>
-                
+
                 <button class="cancel-btn" onclick="window.simplePhoneManager.cancelPairing()">
                     Cancel
                 </button>
-                
+
                 <div class="pairing-status">
                     <i class="fas fa-spinner fa-spin"></i> Waiting for connection...
                 </div>
