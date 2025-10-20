@@ -423,6 +423,7 @@ class SimplePhoneManager {
                 .phone-pairing {
                     text-align: center;
                     padding: 50px;
+                    color: inherit;
                 }
                 
                 .connect-device-btn {
@@ -871,6 +872,111 @@ class SimplePhoneManager {
                     font-size: 64px;
                     color: #00ff00;
                     margin-bottom: 20px;
+                }
+
+                /* Light Theme Support */
+                body[data-theme="light"] .phone-pairing,
+                body[data-theme="light"] .phone-connected,
+                body[data-theme="light"] .disconnect-confirm,
+                body[data-theme="light"] .disconnecting,
+                body[data-theme="light"] .disconnect-success {
+                    color: #000;
+                }
+
+                body[data-theme="light"] .code-digit {
+                    background: rgba(0, 0, 0, 0.1);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .pairing-instructions {
+                    background: rgba(0, 0, 0, 0.05);
+                }
+
+                body[data-theme="light"] .pairing-instructions .url {
+                    background: rgba(0, 0, 0, 0.1);
+                }
+
+                body[data-theme="light"] .cancel-btn {
+                    background: rgba(0, 0, 0, 0.1);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .connected-info {
+                    background: rgba(0, 0, 0, 0.1);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .feature-btn {
+                    background: rgba(0, 0, 0, 0.08);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .feature-btn:hover {
+                    background: rgba(0, 0, 0, 0.15);
+                }
+
+                body[data-theme="light"] .phone-input {
+                    background: rgba(0, 0, 0, 0.05);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .dial-btn {
+                    background: rgba(0, 0, 0, 0.08);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .dial-btn:hover {
+                    background: rgba(0, 0, 0, 0.15);
+                }
+
+                body[data-theme="light"] .delete-btn {
+                    background: rgba(0, 0, 0, 0.1);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .contact-item,
+                body[data-theme="light"] .call-item,
+                body[data-theme="light"] .message-item {
+                    background: rgba(0, 0, 0, 0.05);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .contact-item:hover,
+                body[data-theme="light"] .message-item:hover {
+                    background: rgba(0, 0, 0, 0.1);
+                }
+
+                body[data-theme="light"] .chat-header {
+                    background: rgba(0, 0, 0, 0.1);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .message.received {
+                    background: rgba(0, 0, 0, 0.1);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .chat-input {
+                    background: rgba(0, 0, 0, 0.05);
+                }
+
+                body[data-theme="light"] .chat-input input {
+                    background: rgba(0, 0, 0, 0.1);
+                    color: #000;
+                }
+
+                body[data-theme="light"] .driver-info {
+                    background: rgba(0, 0, 0, 0.05);
+                }
+
+                body[data-theme="light"] .cancel-disconnect-btn {
+                    background: rgba(0, 0, 0, 0.1);
+                    color: #000;
+                    border: 1px solid rgba(0, 0, 0, 0.3);
+                }
+
+                body[data-theme="light"] .cancel-disconnect-btn:hover {
+                    background: rgba(0, 0, 0, 0.15);
                 }
             `;
             document.head.appendChild(style);
