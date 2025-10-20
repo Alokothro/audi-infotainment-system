@@ -200,16 +200,14 @@ class MediaPlayer {
     showBluetoothInterface() {
         const nowPlaying = document.querySelector('.now-playing');
         nowPlaying.innerHTML = `
-            <div class="bluetooth-simple">
-                <div class="album-art" style="display: flex; align-items: center; justify-content: center;">
-                    <i class="fab fa-bluetooth-b fa-4x"></i>
+            <div class="radio-interface">
+                <div class="album-art" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                    <div class="radio-animation">
+                        <i class="fab fa-bluetooth-b fa-4x" style="margin-bottom: 10px;"></i>
+                    </div>
                 </div>
                 <div class="track-info">
-                    <h2>Bluetooth Audio</h2>
-                    <p>Connect your phone via System Preferences → Bluetooth</p>
-                    <p style="margin-top: 10px; font-size: 14px; opacity: 0.5;">
-                        Once connected, audio from your phone will play here
-                    </p>
+                    <h2>Bluetooth</h2>
                 </div>
             </div>
         `;
