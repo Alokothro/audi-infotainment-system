@@ -3,14 +3,9 @@
 ![Electron](https://img.shields.io/badge/Electron-2B2E3A?style=for-the-badge&logo=electron&logoColor=9FEAF9)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=FF9900)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
 
-A luxury car infotainment system featuring 3D visualization, AI voice assistant, real-time navigation, and comprehensive climate/media controls. Built with Electron and deployed on AWS Amplify.
-
-## 🎥 Live Demo
-
-**Production URL:** [https://main.d1jaak7q4la63b.amplifyapp.com](https://main.d1jaak7q4la63b.amplifyapp.com)
+A luxury car infotainment system featuring 3D visualization, AI voice assistant, real-time navigation, and comprehensive climate/media controls. Built with Electron.
 
 ## 📋 Table of Contents
 
@@ -32,7 +27,6 @@ This is a production-ready infotainment system inspired by Audi's luxury design 
 ### Business Impact
 
 - ✅ **Desktop Application**: Cross-platform Electron app for macOS/Windows/Linux
-- ✅ **Cloud Deployment**: AWS Amplify hosting with automatic deployments
 - ✅ **AI Integration**: Claude AI voice assistant with natural language processing
 - ✅ **Real-time Services**: Google Maps navigation + OpenWeather API
 - ✅ **3D Graphics**: Three.js car model viewer with orbit controls
@@ -63,7 +57,6 @@ This is a production-ready infotainment system inspired by Audi's luxury design 
 
 ### Cloud & APIs
 
-- **AWS Amplify** - Static site hosting and deployment
 - **Claude AI (Anthropic)** - Natural language voice assistant
 - **Google Maps API** - Navigation and places autocomplete
 - **OpenWeather API** - Real-time weather data
@@ -243,14 +236,6 @@ npm run dev
 # - Electron desktop application
 ```
 
-### Production Build
-
-```bash
-# The application is deployed to AWS Amplify
-# No build step required - static files served directly
-# Backend API keys embedded with fallback logic
-```
-
 ## 📁 Project Structure
 
 ```
@@ -289,8 +274,7 @@ audi-infotainment-system/
 │   └── sounds/                   # Touch sound effects
 ├── .env                          # Environment variables (gitignored)
 ├── package.json                  # npm dependencies
-├── amplify.yml                   # AWS Amplify build config
-└── index.html                    # AWS Amplify entry point
+└── index.html                    # Entry point
 ```
 
 ## 🔌 API Integration
@@ -332,7 +316,7 @@ async function loadGoogleMaps() {
     const data = await response.json();
     apiKey = data.apiKey;
   } catch (err) {
-    // Fallback to embedded key for AWS Amplify
+    // Fallback to embedded key
     apiKey = 'AIzaSyBdZFsfuPkRJsoF5SehNFzGKphxOm9irwY';
   }
 
@@ -369,45 +353,6 @@ class WeatherService {
 - **Alternative**: KEXP Seattle, Radio Paradise, SomaFM
 - **Jazz & Classical**: Jazz24, Classical KING FM
 - **News**: NPR News
-
-## 🚀 Deployment
-
-### AWS Amplify Configuration
-
-**Build Settings:**
-```yaml
-version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - npm ci --cache .npm --prefer-offline
-    build:
-      commands:
-        - ""
-  artifacts:
-    baseDirectory: .
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - .npm/**/*
-```
-
-**Environment Variables:**
-- No build-time variables needed
-- API keys embedded with fallback logic
-- Static file serving from root directory
-
-### Deployment Workflow
-
-1. **Code Push** to GitHub main branch
-2. **AWS Amplify** auto-detects changes
-3. **Build Process** (npm install)
-4. **Deploy** static files
-5. **Live URL** updated automatically
-
-**Production URL:** https://main.d1jaak7q4la63b.amplifyapp.com
 
 ## 🔧 Technical Implementation
 
@@ -493,7 +438,7 @@ class AudioManager {
 **Challenge**: Exposing API keys in frontend code
 **Solution**:
 - Backend proxy server for local development
-- Fallback embedded key for AWS Amplify deployment
+- Fallback embedded key for production builds
 - Separate keys for dev/production environments
 
 ```javascript
@@ -521,15 +466,7 @@ try {
 - Automatic save on navigation/settings changes
 - Profile restoration on app startup
 
-### 4. **Electron vs Web Deployment**
-
-**Challenge**: Different requirements for Electron vs AWS Amplify
-**Solution**:
-- Conditional API loading (localhost vs production)
-- Entry point redirect (index.html → views/startup.html)
-- Environment detection for API endpoints
-
-### 5. **Theme Consistency**
+### 4. **Theme Consistency**
 
 **Challenge**: Maintaining readability across dark/light themes
 **Solution**:
@@ -572,7 +509,6 @@ This project is available for portfolio and educational purposes.
 ## 🏆 Project Highlights
 
 ✅ **Desktop Application** - Cross-platform Electron app
-✅ **Cloud Deployment** - AWS Amplify with CI/CD
 ✅ **3D Graphics** - Three.js car model visualization
 ✅ **AI Integration** - Claude AI voice assistant
 ✅ **API Mastery** - Google Maps, OpenWeather, streaming services
